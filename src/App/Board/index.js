@@ -10,7 +10,8 @@ import {
 	Avatar,
 	Icon,
 	Divider,
-	Chip
+	Chip,
+	Tooltip
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Card, Alert } from "@blueprintjs/core";
@@ -173,8 +174,9 @@ export default props => {
 										<Avatar>
 											{ctx.gameover
 												? ctx.gameover.winner &&
-												  ctx.gameover.winner.filter(({ pid }) => pid === parseInt(index))
-														.length > 0 && (
+												  ctx.gameover.winner.filter(
+														({ pid }) => pid === parseInt(index)
+												  ).length > 0 && (
 														<Typography>
 															<span role="img" aria-label="">
 																🏆
@@ -211,26 +213,36 @@ export default props => {
 																	: cardInHandIndex
 															}
 														>
-															<Card
-																className={clsx(
-																	classes.card,
-																	!isCurrentClientPlayer && classes.hiddenCard
-																)}
-																interactive={
-																	!gameResult &&
-																	ctx.currentPlayer === index &&
+															<Tooltip
+																title={
 																	isCurrentClientPlayer
+																		? card.value === "✳️"
+																			? "Wildcard Part"
+																			: "Part"
+																		: "Opponent's Card"
 																}
-																onClick={() => {
-																	if (ctx.currentPlayer === index) {
-																		moves.playCard(cardInHandIndex);
-																	}
-																}}
 															>
-																<Typography>
-																	{isCurrentClientPlayer ? card.value : "❔"}
-																</Typography>
-															</Card>
+																<Card
+																	className={clsx(
+																		classes.card,
+																		!isCurrentClientPlayer && classes.hiddenCard
+																	)}
+																	interactive={
+																		!gameResult &&
+																		ctx.currentPlayer === index &&
+																		isCurrentClientPlayer
+																	}
+																	onClick={() => {
+																		if (ctx.currentPlayer === index) {
+																			moves.playCard(cardInHandIndex);
+																		}
+																	}}
+																>
+																	<Typography>
+																		{isCurrentClientPlayer ? card.value : "❔"}
+																	</Typography>
+																</Card>
+															</Tooltip>
 														</Grid>
 													);
 												})}

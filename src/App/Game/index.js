@@ -24,7 +24,8 @@ const allPartCards = [
 	...Array(1).fill("🎉"),
 	...Array(3).fill("💧"),
 	...Array(1).fill("💤"),
-	...Array(1).fill("👅")
+	...Array(1).fill("👅"),
+	...Array(3).fill("✳️")
 ];
 
 const INIT_CARD_TOTAL = 5;
@@ -120,17 +121,19 @@ export default {
 
 			switch (playedCard.type) {
 				case "part":
-					if (!G.target.missingParts.includes(playedCard.value)) {
-						return;
-					}
-					if (
-						G.target.missingParts.filter(part => part === playedCard.value)
-							.length ===
-						G.players[ctx.currentPlayer].repairZone.filter(
-							({ value }) => value === playedCard.value
-						).length
-					) {
-						return;
+					if (playedCard.value !== "✳️") {
+						if (!G.target.missingParts.includes(playedCard.value)) {
+							return;
+						}
+						if (
+							G.target.missingParts.filter(part => part === playedCard.value)
+								.length ===
+							G.players[ctx.currentPlayer].repairZone.filter(
+								({ value }) => value === playedCard.value
+							).length
+						) {
+							return;
+						}
 					}
 					G.players[ctx.currentPlayer].repairZone.push(playedCard);
 					break;
@@ -151,8 +154,8 @@ export default {
 				 * other player can get the total of parts in repair zone for the score
 				 */
 				G.players.forEach((player, id) => {
-                    const { repairZone } = player;
-					if ( parseInt(ctx.currentPlayer) === id) {
+					const { repairZone } = player;
+					if (parseInt(ctx.currentPlayer) === id) {
 						player.score +=
 							emojiRequirements[G.target.requirementIndex].requirements.length;
 					} else {
