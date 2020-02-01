@@ -1,3 +1,7 @@
+# 👨‍🔧 Repair Emoji🤢 Game 👩‍🔧
+
+This project is a web card game to collect specified parts to repair the emoji. The player need to repair most of emoji to become a winner. 
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and powered by [boardgame.io](https://boardgame.io) framework.
 
 ## Available Scripts
