@@ -20,7 +20,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - After all card are drawn from deck, the game will be over.
 - The player who get highest score will be the winner. 
 
----
 
 ## Technology Part
 
