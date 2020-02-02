@@ -15,13 +15,13 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Card, Alert } from "@blueprintjs/core";
-import { emojiRequirements } from "../Game/";
+import { emojiRequirements, explainCard } from "../Game/";
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		marginBottom: theme.spacing(2),
+		marginBottom: theme.spacing(5),
 		backgroundColor: theme.palette.common.black,
-		padding: theme.spacing(2, 2)
+		padding: theme.spacing(2)
 	},
 	card: {
 		width: 55,
@@ -188,7 +188,7 @@ export default props => {
 												  )}
 										</Avatar>
 									}
-									title={`Player ${parseInt(index) + 1}`}
+									title={`Player ${parseInt(index) + 1}` + (isCurrentClientPlayer ? ' (You)': '')}
 									subheader={`Score: ${player.score}`}
 									action={
 										isCurrentClientPlayer &&
@@ -204,6 +204,7 @@ export default props => {
 											</Typography>
 											<Grid container>
 												{player.hands.map((card, cardInHandIndex) => {
+													const cardExplained = explainCard(card);
 													return (
 														<Grid
 															item
@@ -215,11 +216,25 @@ export default props => {
 														>
 															<Tooltip
 																title={
-																	isCurrentClientPlayer
-																		? card.value === "✳️"
-																			? "Wildcard Part"
-																			: "Part"
-																		: "Opponent's Card"
+																	isCurrentClientPlayer ? (
+																		<>
+																			<Typography variant="subtitle2">
+																				{cardExplained.title}
+																			</Typography>
+																			{!!cardExplained.description && (
+																				<Typography
+																					variant="body2"
+																					displayBlock
+																				>
+																					{cardExplained.description}
+																				</Typography>
+																			)}
+																		</>
+																	) : (
+																		<Typography variant="subtitle2">
+																			Opponent's Card
+																		</Typography>
+																	)
 																}
 															>
 																<Card

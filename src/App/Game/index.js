@@ -25,8 +25,10 @@ const allPartCards = [
 	...Array(3).fill("💧"),
 	...Array(1).fill("💤"),
 	...Array(1).fill("👅"),
-	...Array(3).fill("✳️")
+	...Array(5).fill("✳️")
 ];
+
+const allEffectCards = [...Array(5).fill("📦"), ...Array(5).fill("🧰")];
 
 const INIT_CARD_TOTAL = 5;
 
@@ -60,6 +62,7 @@ export default {
 		 * Generate Part Cards According to Number of Players
 		 */
 		let partCards = [];
+		let effectCards = [];
 		Array(totalPlayer)
 			.fill(null)
 			.forEach((x, i) => {
@@ -71,9 +74,17 @@ export default {
 						id: `part-${i * allPartCards.length + index}`
 					}))
 				];
+				effectCards = [
+					...effectCards,
+					...allEffectCards.map((effect, index) => ({
+						type: "effect",
+						value: effect,
+						id: `effect-${i * allEffectCards.length + index}`
+					}))
+				];
 			});
 
-		const deckCards = ctx.random.Shuffle([...partCards]);
+		const deckCards = ctx.random.Shuffle([...partCards, ...effectCards]);
 
 		/**
 		 * Initialize Players and Their Hands
@@ -136,6 +147,32 @@ export default {
 						}
 					}
 					G.players[ctx.currentPlayer].repairZone.push(playedCard);
+					break;
+				case "effect":
+					switch (playedCard.value) {
+						case "📦":
+							Array(
+								G.target.missingParts.length -
+									G.players[ctx.currentPlayer].repairZone.length
+							)
+								.fill("✳️")
+								.forEach(part => {
+									G.players[ctx.currentPlayer].repairZone.push(part);
+								});
+							break;
+						case "🧰":
+							Array(4)
+								.fill(null)
+								.forEach(() => {
+									if (G.deck.length > 0) {
+										const drawnCard = G.deck.shift();
+										G.players[ctx.currentPlayer].hands.push(drawnCard);
+									}
+								});
+							break;
+						default:
+							break;
+					}
 					break;
 				default:
 					break;
@@ -213,5 +250,34 @@ export default {
 				};
 			}
 		}
+	}
+};
+
+export const explainCard = card => {
+	switch (card.type) {
+		case "effect":
+			switch (card.value) {
+				case "📦":
+					return {
+						title: "Effect Card - New Emoji Received",
+						description: "Effect: Repair current emoji immediately"
+					};
+				case "🧰":
+					return {
+						title: "Effect Card - Tool Box",
+						description: "Effect: Draw 4 cards"
+					};
+				default:
+					return {};
+			}
+		case "part":
+			switch (card.value) {
+				case "✳️":
+					return { title: "Wildcard Part Card" };
+				default:
+					return { title: `Part Card - ${card.value}` };
+			}
+		default:
+			return {};
 	}
 };
